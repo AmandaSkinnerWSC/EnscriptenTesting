@@ -1,0 +1,25 @@
+# Emscripten SDK (should never be committed)
+emsdk/
+
+# Build artifacts
+*.o
+*.out
+*.exe
+
+# WebAssembly build files (optional if students rebuild each time)
+*.wasm
+*.js
+
+# Emscripten temporary files
+*.tmp
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+
+# Node modules (if ever used)
+node_modules/
