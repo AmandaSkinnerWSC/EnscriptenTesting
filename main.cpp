@@ -1,100 +1,83 @@
 #include <iostream>
+#include <string>
 #include "cashRegister.h"
 #include "dispenserType.h"
- 
+#include <emscripten.h>
+
 using namespace std;
- 
-void showSelection();
-void sellProduct(dispenserType& product, 
-                 cashRegister& pCounter);
 
-int main()
-{
-    cashRegister counter;
-    dispenserType orange(100, 50); 
-    dispenserType apple(100, 65);
-    dispenserType mango(75, 80);
-    dispenserType strawberryBanana(100, 85);
+cashRegister counter;
+dispenserType orange(100, 50); 
+dispenserType apple(100, 65);
+dispenserType mango(75, 80);
+dispenserType strawberryBanana(100, 85);
 
-    int choice;  //variable to hold the selection
+int choice = 0; // keeps track of user choice
 
-    showSelection();
-    cin >> choice;
+// helper functions
+string showSelection() {
+    string output = "*** Welcome to Shelly's Juice Shop ***\n";
+    output += "To select an item, enter:\n";
+    output += "1 for orange juice (50 cents)\n";
+    output += "2 for apple juice (65 cents)\n";
+    output += "3 for mango juice (80 cents)\n";
+    output += "4 for strawberry banana juice (85 cents)\n";
+    output += "9 to exit\n";
+    return output;
+}
 
-    while (choice != 9)
-    {
-        switch (choice)
-        {
-        case 1: 
-            sellProduct(orange, counter);
-            break;
-        case 2: 
-            sellProduct(apple, counter);
-            break;
-        case 3: 
-            sellProduct(mango, counter);
-            break;
-        case 4: 
-            sellProduct(strawberryBanana, counter);
-            break;
-        default: 
-            cout << "Invalid selection." << endl;
-        }//end switch
-
-        showSelection();
-        cin >> choice;
-    }//end while
-
-    return 0;
-}//end main
-
-void showSelection()
-{
-    cout << "*** Welcome to Shelly's Juice Shop ***" << endl;
-    cout << "To select an item, enter " << endl;
-    cout << "1 for orange juice (50 cents)" << endl;
-    cout << "2 for apple juice (65 cents)" << endl;
-    cout << "3 for mango juice (80 cents)" << endl;
-    cout << "4 for strawberry banana juice (85 cents)" << endl;
-    cout << "9 to exit" << endl;
-}//end showSelection
-
-void sellProduct(dispenserType& product, 
-                 cashRegister& pCounter)
-{
-    int amount;  //variable to hold the amount entered
-    int amount2; //variable to hold the extra amount needed
-
-    if (product.getNoOfItems() > 0) //if the dispenser is not 
-                                    //empty
-    {
-        cout << "Please deposit " << product.getCost()
-             << " cents" << endl;
-        cin >> amount;
-
-        if (amount < product.getCost())
-        {
-            cout << "Please deposit another "
-                 << product.getCost()- amount
-                 << " cents" << endl;
-            cin >> amount2;
-            amount = amount + amount2;
-       }
-
-        if (amount >= product.getCost())
-        {
+string sellProduct(dispenserType& product, cashRegister& pCounter, int amount) {
+    string output = "";
+    int amount2;
+    if (product.getNoOfItems() > 0) {
+        output += "Please deposit " + to_string(product.getCost()) + " cents\n";
+        if (amount < product.getCost()) {
+            amount2 = product.getCost() - amount;
+            amount += amount2;
+            output += "Please deposit another " + to_string(amount2) + " cents\n";
+        }
+        if (amount >= product.getCost()) {
             pCounter.acceptAmount(amount);
             product.makeSale();
-            cout << "Collect your item at the bottom and "
-                 << "enjoy." << endl;
+            output += "Collect your item at the bottom and enjoy.\n";
+        } else {
+            output += "The amount is not enough. Collect what you deposited.\n";
         }
-        else
-            cout << "The amount is not enough. " 
-                 << "Collect what you deposited." << endl;
-
-        cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
-             << endl << endl;
+    } else {
+        output += "Sorry, this item is sold out.\n";
     }
-    else
-        cout << "Sorry, this item is sold out." << endl;
-}//end sellProduct
+    output += "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n\n";
+    return output;
+}
+
+// Expose this to JS
+extern "C" {
+    EMSCRIPTEN_KEEPALIVE
+    const char* handleCommand(const char* cmd) {
+        static string output; // must be static so pointer stays valid
+        string command(cmd);
+
+        // first, handle menu selection
+        if (choice == 0) {
+            choice = stoi(command);
+            output = showSelection();
+            return output.c_str();
+        }
+
+        string response = "";
+        switch (choice) {
+            case 1: response = sellProduct(orange, counter, stoi(command)); break;
+            case 2: response = sellProduct(apple, counter, stoi(command)); break;
+            case 3: response = sellProduct(mango, counter, stoi(command)); break;
+            case 4: response = sellProduct(strawberryBanana, counter, stoi(command)); break;
+            default: response = "Invalid selection.\n"; break;
+        }
+
+        output = response + showSelection();
+
+        // reset choice so next input is menu selection
+        choice = 0;
+
+        return output.c_str();
+    }
+}
