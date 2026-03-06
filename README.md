@@ -45,3 +45,5 @@ em++ *.cpp -o index.html
 To make sure your website deploys, copy the .gitignore file here and add it to your repo.  
 Then you can commit and deploy with GitHub Pages.  
 (You can come back and delete the entire emsdk folder when you are happy with your project.)
+
+em++ main.cpp -o program.js -sASYNCIFY -sFORCE_FILESYSTEM
