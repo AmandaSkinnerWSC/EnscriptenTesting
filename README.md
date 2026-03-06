@@ -62,3 +62,5 @@ emcc interview.cpp -o interview.html \
 -s "EXPORTED_FUNCTIONS=['_main','_print_greeting','_print_choice']" \
 -s "EXPORTED_RUNTIME_METHODS=['ccall','cwrap']" \
 -O2
+
+Ok so this works but it doesn't allow you to loop back.
