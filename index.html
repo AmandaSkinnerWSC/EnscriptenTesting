@@ -1,33 +1,41 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <title>C++ Web Demo</title>
 
 <style>
+
 body {
     font-family: Arial;
-    background: #f4f4f4;
-    text-align: center;
+    background:#f0f0f0;
+    text-align:center;
 }
 
 .container {
-    width: 700px;
-    margin: auto;
+    width:700px;
+    margin:auto;
 }
 
-textarea {
-    width: 100%;
-    height: 300px;
-    background: black;
-    color: #00ff00;
-    font-family: monospace;
-    padding: 10px;
+.console {
+    width:100%;
+    height:300px;
+    background:black;
+    color:#00ff00;
+    font-family:monospace;
+    padding:10px;
+}
+
+input {
+    padding:8px;
+    font-size:16px;
 }
 
 button {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding:8px 15px;
+    font-size:16px;
 }
+
 </style>
 </head>
 
@@ -35,16 +43,20 @@ button {
 
 <div class="container">
 
-<h1>My C++ Project</h1>
-<p>This program is written in C++ and compiled to WebAssembly.</p>
+<h1>C++ Web Demo</h1>
+
+<p>Enter a number:</p>
+
+<input id="userInput">
 
 <button onclick="runProgram()">Run Program</button>
 
-<textarea id="output"></textarea>
+<textarea id="output" class="console"></textarea>
 
 </div>
 
 <script>
+
 var Module = {
   print: function(text) {
       document.getElementById("output").value += text + "\n";
@@ -55,9 +67,13 @@ var Module = {
 };
 
 function runProgram() {
+
     document.getElementById("output").value = "";
-    Module.callMain();
+
+    if (Module.callMain)
+        Module.callMain([]);
 }
+
 </script>
 
 <script src="program.js"></script>
