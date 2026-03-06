@@ -42,4 +42,4 @@ Now you can compile using the following code:
 em++ *.cpp -o index.html
 ```
 
-Now you can go to settings and deploy with github pages.
+Now you can commit your work, then go to settings and deploy with github pages.
