@@ -55,3 +55,10 @@ em++ main.cpp cashRegisterImp.cpp dispenserTypeImp.cpp -o program.js \
     -sEXPORTED_FUNCTIONS=_handleCommand \
     -sEXPORTED_RUNTIME_METHODS=ccall,cwrap \
     -sASYNCIFY
+
+
+emcc interview.cpp -o interview.html \
+-s WASM=1 \
+-s "EXPORTED_FUNCTIONS=['_main','_print_greeting','_print_choice']" \
+-s "EXPORTED_RUNTIME_METHODS=['ccall','cwrap']" \
+-O2

@@ -1,0 +1,57 @@
+#include <emscripten/emscripten.h>
+#include <iostream>
+#include <string>
+
+// Forward declarations
+void ask_question2(const char* name);
+
+// Start the interview by asking the user's name
+void ask_name() {
+    EM_ASM({
+        var name = prompt("Welcome! What's your name?");
+        if (name !== null && name !== "") {
+            Module.ccall('print_greeting', 'void', ['string'], [name]);
+        } else {
+            console.log("User canceled or left empty. Exiting interview.");
+        }
+    });
+}
+
+// Print greeting and proceed to next question
+extern "C" void print_greeting(const char* name) {
+    std::cout << "Hello, " << name << "!" << std::endl;
+    ask_question2(name);
+}
+
+// Second question with branching options
+void ask_question2(const char* name) {
+    EM_ASM_({
+        var choice = prompt("Do you prefer cats or dogs? (Enter 'cats' or 'dogs')");
+        if (choice !== null && choice !== "") {
+            Module.ccall('print_choice', 'void', ['string', 'string'], [$0, choice]);
+        } else {
+            console.log("No choice made. Ending interview.");
+        }
+    }, name);
+}
+
+// Print choice response
+extern "C" void print_choice(const char* name, const char* choice) {
+    std::string response;
+    std::string s_choice(choice);
+    if (s_choice == "cats") {
+        response = "Great! Cats are mysterious and cute.";
+    } else if (s_choice == "dogs") {
+        response = "Awesome! Dogs are loyal and fun.";
+    } else {
+        response = "Interesting choice!";
+    }
+    std::cout << name << ", you chose: " << choice << std::endl;
+    std::cout << response << std::endl;
+    std::cout << "Thanks for completing the interview!" << std::endl;
+}
+
+int main() {
+    ask_name();  // kick off the interview
+    return 0;
+}
