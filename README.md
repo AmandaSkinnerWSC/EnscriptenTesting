@@ -47,4 +47,4 @@ Then you can commit and deploy with GitHub Pages.
 (You can come back and delete the entire emsdk folder when you are happy with your project.)
 
 em++ main.cpp -o program.js -sASYNCIFY -sFORCE_FILESYSTEM
-$ em++ *.cpp -o program.js -sASYNCIFY -sFORCE_FILESYSTEM
+em++ *.cpp -o program.js -sASYNCIFY -sFORCE_FILESYSTEM
