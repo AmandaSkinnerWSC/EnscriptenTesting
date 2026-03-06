@@ -48,3 +48,5 @@ Then you can commit and deploy with GitHub Pages.
 
 em++ main.cpp -o program.js -sASYNCIFY -sFORCE_FILESYSTEM
 em++ *.cpp -o program.js -sASYNCIFY -sFORCE_FILESYSTEM
+
+em++ main.cpp -o program.js -sASYNCIFY -sEXPORTED_RUNTIME_METHODS=callMain
